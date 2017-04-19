@@ -1,6 +1,7 @@
 package helloweb;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -8,23 +9,21 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
-import bean.StudentClass;
-import bean.StudentMessage;
+import bean.Lesson;
 import dao.StudentDao;
 
 /**
- * Servlet implementation class AdminQueryMessage
+ * Servlet implementation class AdminAddClass
  */
-@WebServlet("/AdminQueryMessage")
-public class AdminQueryMessage extends HttpServlet {
+@WebServlet("/AdminAddLesson")
+public class AdminAddLesson extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public AdminQueryMessage() {
+    public AdminAddLesson() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -34,21 +33,7 @@ public class AdminQueryMessage extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		HttpSession session = request.getSession();
-		if(session == null || !((String)session.getAttribute("username")).equals("admin")) {
-			response.sendRedirect("login.jsp");
-			return;
-		} 
-		request.setCharacterEncoding("UTF-8");
-		StudentDao studentdao = new StudentDao();
-		String username = (String)request.getParameter("student_id");
-		StudentMessage studentmessage = studentdao.queryStudentMessage(username);
-		StudentClass studentclass = studentdao.queryStudentClass(username);
-		request.setAttribute("studentmessage", studentmessage);
-		request.setAttribute("studentclass", studentclass);
-		RequestDispatcher rd = request.getRequestDispatcher("/admin.jsp");
-		rd.forward(request,response);
-		
+		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
 	/**
@@ -56,7 +41,17 @@ public class AdminQueryMessage extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		doGet(request, response);
+		request.setCharacterEncoding("UTF-8");
+		StudentDao studentdao = new StudentDao();
+		Lesson lesson = new Lesson();
+		lesson.setClass_term(request.getParameter("class_term"));
+		lesson.setClass_name(request.getParameter("class_name"));
+		lesson.setClass_major(request.getParameter("class_major"));
+		studentdao.adminAddLesson(lesson);
+		List<Lesson> lesson2 = studentdao.adminQueryLesson();
+		request.setAttribute("lesson", lesson2);
+		RequestDispatcher rd = request.getRequestDispatcher("/adminlesson.jsp");
+		rd.forward(request,response);
 	}
 
 }

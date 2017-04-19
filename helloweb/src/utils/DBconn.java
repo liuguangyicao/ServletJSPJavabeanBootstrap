@@ -10,7 +10,7 @@ public class DBconn {
 	public static Statement stmt;//定义STMT     
 	public ResultSet rs;//定义结果集    
 	static{     
-		String url = "jdbc:mysql://localhost:3306/class?"   + "user=root&password=51258868lin&useUnicode=true&characterEncoding=UTF8&useSSL=false";    
+		String url = "jdbc:mysql://localhost:3306/class?"   + "user=root&password=123&useUnicode=true&characterEncoding=UTF8&useSSL=false";    
 		try {  
 			Class.forName("com.mysql.jdbc.Driver");// 动态加载mysql驱动  	  
 	        conn = DriverManager.getConnection(url);  

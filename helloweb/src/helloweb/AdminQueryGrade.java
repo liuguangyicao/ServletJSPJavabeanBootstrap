@@ -9,22 +9,20 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import bean.StudentClass;
-import bean.StudentMessage;
+import bean.Grade;
 import dao.StudentDao;
-
+import java.util.*;
 /**
- * Servlet implementation class AdminQueryMessage
+ * Servlet implementation class AdminQueryClass
  */
-@WebServlet("/AdminQueryMessage")
-public class AdminQueryMessage extends HttpServlet {
+@WebServlet("/AdminQueryGrade")
+public class AdminQueryGrade extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public AdminQueryMessage() {
+    public AdminQueryGrade() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -39,15 +37,7 @@ public class AdminQueryMessage extends HttpServlet {
 			response.sendRedirect("login.jsp");
 			return;
 		} 
-		request.setCharacterEncoding("UTF-8");
-		StudentDao studentdao = new StudentDao();
-		String username = (String)request.getParameter("student_id");
-		StudentMessage studentmessage = studentdao.queryStudentMessage(username);
-		StudentClass studentclass = studentdao.queryStudentClass(username);
-		request.setAttribute("studentmessage", studentmessage);
-		request.setAttribute("studentclass", studentclass);
-		RequestDispatcher rd = request.getRequestDispatcher("/admin.jsp");
-		rd.forward(request,response);
+		response.sendRedirect("admingrade.jsp");
 		
 	}
 
@@ -56,7 +46,13 @@ public class AdminQueryMessage extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		doGet(request, response);
+		request.setCharacterEncoding("UTF-8");
+		StudentDao studentdao = new StudentDao();
+		String student_id = (String)request.getParameter("student_id");
+		List<Grade> grade = studentdao.adminQueryGrade(student_id);
+		request.setAttribute("grade", grade);
+		RequestDispatcher rd = request.getRequestDispatcher("/admingrade.jsp");
+		rd.forward(request,response);
 	}
 
 }

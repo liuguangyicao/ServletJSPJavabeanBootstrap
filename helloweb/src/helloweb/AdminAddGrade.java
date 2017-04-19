@@ -9,22 +9,22 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
 import bean.StudentClass;
-import bean.StudentMessage;
+import bean.AdminClass;
 import dao.StudentDao;
-
+import dao.Check;
+import bean.Lesson;
 /**
- * Servlet implementation class AdminQueryMessage
+ * Servlet implementation class AdminAddStudent
  */
-@WebServlet("/AdminQueryMessage")
-public class AdminQueryMessage extends HttpServlet {
+@WebServlet("/AdminAddGrade")
+public class AdminAddGrade extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public AdminQueryMessage() {
+    public AdminAddGrade() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -39,16 +39,7 @@ public class AdminQueryMessage extends HttpServlet {
 			response.sendRedirect("login.jsp");
 			return;
 		} 
-		request.setCharacterEncoding("UTF-8");
-		StudentDao studentdao = new StudentDao();
-		String username = (String)request.getParameter("student_id");
-		StudentMessage studentmessage = studentdao.queryStudentMessage(username);
-		StudentClass studentclass = studentdao.queryStudentClass(username);
-		request.setAttribute("studentmessage", studentmessage);
-		request.setAttribute("studentclass", studentclass);
-		RequestDispatcher rd = request.getRequestDispatcher("/admin.jsp");
-		rd.forward(request,response);
-		
+		response.sendRedirect("admingrade.jsp");
 	}
 
 	/**
@@ -56,7 +47,20 @@ public class AdminQueryMessage extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		doGet(request, response);
+		request.setCharacterEncoding("UTF-8");
+		StudentDao studentdao = new StudentDao();
+		Lesson lesson = new Lesson();
+		lesson.setClass_name(request.getParameter("class_name"));
+		lesson.setClass_term(request.getParameter("class_term"));
+		lesson.setClass_major(request.getParameter("class_major"));
+		String student_class_id = studentdao.adminQueryLesson(lesson);
+		if(student_class_id.equals("")) {
+			
+		} else {
+			studentdao.adminAddGrade(student_class_id, request.getParameter("student_id"), request.getParameter("class_score"));
+		}
+		RequestDispatcher rd = request.getRequestDispatcher("/admingrade.jsp");
+		rd.forward(request,response);
 	}
 
 }

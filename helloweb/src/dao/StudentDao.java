@@ -6,6 +6,8 @@ import bean.StudentClass;
 import bean.StudentMessage;
 import bean.StudentLesson;
 import bean.AdminClass;
+import bean.Lesson;
+import bean.Grade;
 import utils.DBconn;
 import java.util.*;
 public class StudentDao {
@@ -105,7 +107,6 @@ public class StudentDao {
 	public List<StudentClass> adminQueryClass(AdminClass adminclass)  {
 		String sql = "SELECT * FROM student_class WHERE major= '" + adminclass.getMajor() + "'and class_id='"+adminclass.getClass_id()+"'and grade='"
 	+adminclass.getGrade()+"';";
-		System.out.println(sql);
 		DBconn dbconn = new DBconn();
 		ResultSet rst = null;
 		List<StudentClass> studentclass = new ArrayList<StudentClass>( );
@@ -149,6 +150,119 @@ public class StudentDao {
 				adminclass.getGrade()+" WHERE student_id = '"+studentclass.getStudent_id()+"';";
 		//System.out.println(sql2);
 		//System.out.println(sql);
+		DBconn dbconn = new DBconn();
+		ResultSet rst = null;
+		dbconn.doInsert(sql);
+		try {
+			dbconn.close(rst);
+		} catch(Exception ex) {	
+		}
+	}
+	public List<Lesson> adminQueryLesson()  {
+		String sql = "SELECT * FROM class_name;";
+		DBconn dbconn = new DBconn();
+		ResultSet rst = null;
+		List<Lesson> lesson = new ArrayList<Lesson>( );
+		rst = dbconn.doSelect(sql);
+		try {
+			while(rst.next()) {
+				Lesson tmp = new Lesson();
+				tmp.setClass_name(rst.getString("class_name"));
+				tmp.setClass_term(rst.getString("class_term"));
+				tmp.setClass_major(rst.getString("class_major"));
+				lesson.add(tmp);
+			}
+		} catch(SQLException ex) {	
+		}
+		try {
+			dbconn.close(rst);
+		} catch(Exception ex) {	
+		}
+	return lesson;
+	}
+	public void adminUpdateLesson(Lesson lesson)  {
+		String sql = "DELETE FROM class_name WHERE class_name = '" + lesson.getClass_name() + "' and class_term= '"
+				+ lesson.getClass_term()+"' and class_major ='" + lesson.getClass_major() + "';";
+		DBconn dbconn = new DBconn();
+		ResultSet rst = null;
+		dbconn.doInsert(sql);
+		try {
+			dbconn.close(rst);
+		} catch(Exception ex) {	
+		}
+	}
+	public void adminAddLesson(Lesson lesson)  {
+		String sql = "INSERT INTO class_name(class_term, class_name, class_major) values('" + lesson.getClass_term() + "','"
+	+ lesson.getClass_name()+"','" + lesson.getClass_major() + "');";
+		
+		DBconn dbconn = new DBconn();
+		ResultSet rst = null;
+		dbconn.doInsert(sql);
+		try {
+			dbconn.close(rst);
+		} catch(Exception ex) {	
+		}
+	}
+	public List<Grade> adminQueryGrade(String student_id)  {
+		String sql = "SELECT class_name, class_term, class_score FROM class_name join class_score on class_name.id = class_score.student_class_id WHERE student_id = '"
+	+ student_id + "';";
+		System.out.println(sql);
+		DBconn dbconn = new DBconn();
+		ResultSet rst = null;
+		List<Grade> lesson = new ArrayList<Grade>( );
+		rst = dbconn.doSelect(sql);
+		try {
+			while(rst.next()) {
+				Grade tmp = new Grade();
+				tmp.setClass_name(rst.getString("class_name"));
+				tmp.setClass_term(rst.getString("class_term"));
+				tmp.setClass_score(rst.getString("class_score"));
+				lesson.add(tmp);
+			}
+		} catch(SQLException ex) {	
+		}
+		try {
+			dbconn.close(rst);
+		} catch(Exception ex) {	
+		}
+	return lesson;
+	}
+	public String adminQueryLesson(Lesson lesson)  {
+		String sql = "SELECT id FROM class_name WHERE class_term= '" + lesson.getClass_term() + "'and class_name='"+lesson.getClass_name()+"'and class_major='"
+	+lesson.getClass_major()+"';";
+		//System.out.println(sql);
+		String ans = "";
+		DBconn dbconn = new DBconn();
+		ResultSet rst = null;
+		rst = dbconn.doSelect(sql);
+		try {
+			if(rst.next()) {
+				ans = rst.getString("id");
+			}
+		} catch(SQLException ex) {	
+		}
+		try {
+			dbconn.close(rst);
+		} catch(Exception ex) {	
+		}
+	return ans;
+}
+	public void adminAddGrade(String student_class_id, String student_id, String class_score)  {
+		String sql = "INSERT INTO class_score(student_class_id, student_id, class_score) values('" + student_class_id + "','"
+	+ student_id +"','" + class_score + "');";
+		//System.out.println(sql);
+		DBconn dbconn = new DBconn();
+		ResultSet rst = null;
+		dbconn.doInsert(sql);
+		try {
+			dbconn.close(rst);
+		} catch(Exception ex) {	
+		}
+	}
+	public void adminDeleteGrade(String student_class_id, String student_id, String class_score)  {
+		String sql = "DELETE FROM class_score WHERE student_class_id = '" + student_class_id + "' and student_id = '"
+	+ student_id +"' and class_score = '" + class_score + "';";
+	//	System.out.println(sql);
 		DBconn dbconn = new DBconn();
 		ResultSet rst = null;
 		dbconn.doInsert(sql);
